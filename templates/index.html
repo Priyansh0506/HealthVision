@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthVison | Disease Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --accent: #06b6d4;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg: #030712;
+            --card: #0f172a;
+            --card2: #1e293b;
+            --border: #1e293b;
+            --text: #f1f5f9;
+            --muted: #64748b;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        nav {
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 70px 20px 50px;
+            background: radial-gradient(ellipse at top, #1e1b4b 0%, transparent 70%);
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(79,70,229,0.15);
+            border: 1px solid rgba(79,70,229,0.4);
+            color: #a5b4fc;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p { color: var(--muted); font-size: 17px; max-width: 550px; margin: 0 auto 40px; line-height: 1.7; }
+
+        .stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+
+        .stat { text-align: center; }
+
+        .stat-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+        .main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            margin-bottom: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-input:focus { border-color: var(--primary); }
+
+        .symptoms-list {
+            max-height: 320px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .symptoms-list::-webkit-scrollbar { width: 4px; }
+        .symptoms-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
+
+        .symptom-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .symptom-item:hover { background: var(--card2); }
+        .symptom-item.selected { background: rgba(79,70,229,0.15); color: #a5b4fc; }
+        .symptom-item input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+
+        .selected-count { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+        .tags-box {
+            min-height: 80px;
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tag {
+            background: rgba(79,70,229,0.2);
+            border: 1px solid rgba(79,70,229,0.4);
+            color: #a5b4fc;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag-remove { cursor: pointer; font-size: 16px; opacity: 0.7; }
+        .tag-remove:hover { opacity: 1; }
+        .empty-tags { color: var(--muted); font-size: 14px; margin: auto; }
+
+        .predict-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .predict-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .result-section { display: none; grid-column: 1 / -1; }
+
+        .emergency-banner {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.4);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+        }
+
+        .result-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+
+        .disease-card {
+            background: linear-gradient(135deg, rgba(79,70,229,0.1), rgba(6,182,212,0.05));
+            border: 1px solid rgba(79,70,229,0.3);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .disease-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+
+        .disease-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .confidence-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
+
+        .confidence-bar { height: 6px; background: var(--card2); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        .doctor-box {
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.25);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .doctor-icon { font-size: 24px; }
+        .doctor-label { font-size: 12px; color: var(--muted); }
+        .doctor-name { font-weight: 600; color: #6ee7b7; font-size: 15px; }
+
+        .top3-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+        .top3-item { margin-bottom: 16px; }
+        .top3-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+        .top3-bar { height: 5px; background: var(--card2); border-radius: 3px; overflow: hidden; }
+        .top3-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; }
+
+        .desc-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+        .desc-text { font-size: 14px; line-height: 1.8; color: #94a3b8; }
+
+        .prec-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+        .prec-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: #94a3b8; }
+        .prec-item:last-child { border-bottom: none; }
+        .prec-icon { color: var(--success); font-size: 16px; margin-top: 1px; }
+
+        .loading { display: none; text-align: center; padding: 30px; grid-column: 1 / -1; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .section-wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .history-wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+
+        .history-item { display: flex; align-items: center; gap: 16px; padding: 14px; background: var(--card2); border-radius: 10px; margin-bottom: 10px; }
+        .history-num { background: rgba(79,70,229,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #6366f1; flex-shrink: 0; }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .severity-low { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+        .severity-medium { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+        .severity-high { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+        footer { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .main { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 32px; }
+            .result-grid { grid-template-columns: 1fr; }
+            .result-section { grid-column: 1; }
+            .loading { grid-column: 1; }
+            .section-wrap { grid-template-columns: 1fr; }
+        }
+        .logout-btn{
+    background:#ef4444;
+    color:white;
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+}
+    </style>
+</head>
+<body>
+    
+
+<nav>
+
+<div class="logo">HealthVision</div>
+
+<div style="display:flex;align-items:center;gap:15px;">
+
+    <div class="nav-badge">
+        👤 {{ session.username }}
+    </div>
+
+    <a href="/logout" class="logout-btn">
+        Logout
+    </a>
+
+</div>
+
+</nav>
+
+<div class="hero">
+    <div class="hero-tag">⚕️ AI-Powered Healthcare Assistant</div>
+   <h1>Smart Disease<br><span>Prediction System</span></h1>
+    <p>Select symptoms and get AI-assisted disease predictions, risk analysis, and medical recommendations.</p>
+    <div class="stats">
+        <div class="stat"><div class="stat-number">41 diseases</div><div class="stat-label">Diseases</div></div>
+        <div class="stat"><div class="stat-number">93.2% Accuracy</div><div class="stat-label">Accuracy</div></div>
+        <div class="stat"><div class="stat-number">130+ Symptoms</div><div class="stat-label">Symptoms</div></div>
+        <div class="stat"><div class="stat-number">Rendom Forest ML</div><div class="stat-label">Algorithm</div></div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="card">
+        <div class="card-title">🔍 Select Symptoms</div>
+        <input type="text" class="search-input" placeholder="Search symptoms..." onkeyup="filterSymptoms(this.value)">
+        <div class="symptoms-list" id="symptoms-list">
+            {% for symptom in symptoms %}
+            <label class="symptom-item">
+                <input type="checkbox" value="{{ symptom }}" onchange="toggleSymptom(this)">
+                {{ symptom.replace('_', ' ') | title }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📋 Your Symptoms</div>
+        <div class="selected-count" id="selected-count">0 symptoms selected</div>
+        <div class="tags-box" id="tags-box">
+            <span class="empty-tags">No symptoms selected yet...</span>
+        </div>
+        <button class="predict-btn" onclick="predictDisease()" id="predict-btn">Analyze Symptoms →</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="color:#64748b;">Analyzing your symptoms...</p>
+    </div>
+
+    <div class="result-section" id="result-section">
+        <div style="text-align:right; margin-bottom:16px; display:none;" id="pdf-btn-wrap">
+    <button onclick="downloadPDF()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">
+        📄 Download PDF Report
+    </button>
+</div>
+        <div class="emergency-banner" id="emergency-banner" style="display:none">
+            🚨 <strong>Emergency Alert:</strong> Critical symptoms detected. Please seek immediate medical attention.
+        </div>
+
+        <div class="result-grid">
+            <div class="disease-card">
+                <div class="disease-label">Primary Diagnosis</div>
+                <div class="disease-name" id="disease-name">—</div>
+                <div id="severity-badge"></div>
+                <div class="confidence-row">
+                    <span style="color:#64748b; font-size:13px;">Confidence Score</span>
+                    <span id="confidence-val" style="font-weight:600;">—</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidence-fill" style="width:0%"></div>
+                </div>
+                <div class="doctor-box">
+                    <div class="doctor-icon">👨‍⚕️</div>
+                    <div>
+                        <div class="doctor-label">Recommended Specialist</div>
+                        <div class="doctor-name" id="doctor-name">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top3-card">
+                <div class="card-title">📊 Top Predictions</div>
+                <div id="top3-list"></div>
+            </div>
+
+            <div class="desc-card">
+                <div class="card-title">📖 About This Condition</div>
+                <div class="desc-text" id="description">—</div>
+            </div>
+
+            <div class="prec-card">
+                <div class="card-title">💊 Precautions</div>
+                <div id="precautions-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODEL STATS -->
+<div class="section-wrap">
+    <div class="card">
+        <div class="card-title">🤖 Model Comparison</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:14px;">Random Forest</span>
+            <span style="color:#6366f1; font-weight:600;" id="rf-acc">Loading...</span>
+        </div>
+        <div class="confidence-bar" style="margin-bottom:20px;">
+            <div class="confidence-fill" id="rf-bar" style="width:0%"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:14px;">Decision Tree</span>
+            <span style="color:#06b6d4; font-weight:600;" id="dt-acc">Loading...</span>
+        </div>
+        <div class="confidence-bar" style="margin-bottom:20px;">
+            <div class="confidence-fill" id="dt-bar" style="width:0%; background: linear-gradient(90deg, #06b6d4, #0891b2);"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:10px;">
+            <div style="background:#1e293b; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#6366f1;" id="stat-diseases">—</div>
+                <div style="font-size:12px; color:#64748b; margin-top:4px;">Diseases</div>
+            </div>
+            <div style="background:#1e293b; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#06b6d4;" id="stat-symptoms">—</div>
+                <div style="font-size:12px; color:#64748b; margin-top:4px;">Symptoms</div>
+            </div>
+            <div style="background:#1e293b; border-radius:10px; padding:14px; text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#10b981;" id="stat-samples">—</div>
+                <div style="font-size:12px; color:#64748b; margin-top:4px;">Training Samples</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📊 Top Predictive Symptoms</div>
+        <div id="top-symptoms-list"></div>
+    </div>
+</div>
+
+<!-- HISTORY -->
+<div class="history-wrap">
+    <div class="card">
+        <div class="card-title">🕐 Recent Predictions</div>
+        <div id="history-list" style="color:#64748b; font-size:14px;">No predictions yet.</div>
+    </div>
+</div>
+
+<footer>
+    © 2026 HealthVision | Machine Learning Based Disease Prediction System
+    <br>
+    For Educational & Research Purposes Only
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+    let selected = [];
+
+    function filterSymptoms(query) {
+        document.querySelectorAll('.symptom-item').forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(query.toLowerCase()) ? 'flex' : 'none';
+        });
+    }
+
+    function toggleSymptom(checkbox) {
+        const val = checkbox.value;
+        const label = checkbox.closest('label');
+        if (checkbox.checked) {
+            selected.push(val);
+            label.classList.add('selected');
+        } else {
+            selected = selected.filter(s => s !== val);
+            label.classList.remove('selected');
+        }
+        renderTags();
+    }
+
+    function renderTags() {
+        const box = document.getElementById('tags-box');
+        document.getElementById('selected-count').textContent = selected.length + ' symptom' + (selected.length !== 1 ? 's' : '') + ' selected';
+        if (selected.length === 0) {
+            box.innerHTML = '<span class="empty-tags">No symptoms selected yet...</span>';
+            return;
+        }
+        box.innerHTML = selected.map(s => `
+        <div class="hero-tag">
+⚕️ AI & Machine Learning Powered Healthcare System
+</div>
+            ${s.replace('_', ' ')}
+            <span class="tag-remove" onclick="removeTag('${s}')">&times;</span>
+        `).join('');
+    }
+
+    function removeTag(symptom) {
+        selected = selected.filter(s => s !== symptom);
+        const cb = document.querySelector('input[value="' + symptom + '"]');
+        if (cb) { cb.checked = false; cb.closest('label').classList.remove('selected'); }
+        renderTags();
+    }
+
+    function getSeverityBadge(confidence) {
+        if (confidence >= 70) return '<span class="severity-badge severity-high">⚠ High Severity — See Doctor Soon</span>';
+        if (confidence >= 40) return '<span class="severity-badge severity-medium">⚡ Moderate — Monitor Closely</span>';
+        return '<span class="severity-badge severity-low">✓ Low Severity — Rest & Recover</span>';
+    }
+
+    async function predictDisease() {
+        if (selected.length === 0) { alert('Please select at least one symptom.'); return; }
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('predict-btn').disabled = true;
+
+        const res = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symptoms: selected })
+        });
+        const data = await res.json();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        document.getElementById('pdf-btn-wrap').style.display = 'block';
+        document.getElementById('predict-btn').disabled = false;
+        document.getElementById('disease-name').textContent = data.disease;
+        document.getElementById('confidence-val').textContent = data.confidence + '%';
+        document.getElementById('confidence-fill').style.width = data.confidence + '%';
+        document.getElementById('doctor-name').textContent = data.doctor;
+        document.getElementById('description').textContent = data.description;
+        document.getElementById('severity-badge').innerHTML = getSeverityBadge(data.confidence);
+        document.getElementById('emergency-banner').style.display = data.emergency ? 'flex' : 'none';
+
+        document.getElementById('top3-list').innerHTML = data.top3.map(([disease, prob]) => `
+            <div class="top3-item">
+                <div class="top3-row">
+                    <span>${disease}</span>
+                    <span style="color:#6366f1; font-weight:600;">${prob}%</span>
+                </div>
+                <div class="top3-bar">
+                    <div class="top3-fill" style="width:${prob}%"></div>
+                </div>
+            </div>
+        `).join('');
+
+        document.getElementById('precautions-list').innerHTML = data.precautions.length > 0
+            ? data.precautions.map(p => `<div class="prec-item"><span class="prec-icon">✓</span><span>${p}</span></div>`).join('')
+            : '<div class="prec-item">Consult your doctor for specific precautions.</div>';
+
+        await savePrediction(data, selected);
+        document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function loadStats() {
+        const res = await fetch('/model-stats');
+        const data = await res.json();
+        document.getElementById('rf-acc').textContent = data.rf_accuracy + '%';
+        document.getElementById('dt-acc').textContent = data.dt_accuracy + '%';
+        document.getElementById('rf-bar').style.width = data.rf_accuracy + '%';
+        document.getElementById('dt-bar').style.width = data.dt_accuracy + '%';
+        document.getElementById('stat-diseases').textContent = data.total_diseases;
+        document.getElementById('stat-symptoms').textContent = data.total_symptoms;
+        document.getElementById('stat-samples').textContent = data.training_samples;
+
+        document.getElementById('top-symptoms-list').innerHTML = data.top_symptoms.map(s => `
+            <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;">
+                    <span>${s.symptom}</span>
+                    <span style="color:#6366f1;">${s.importance}%</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width:${Math.min(s.importance * 8, 100)}%"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function loadHistory() {
+        const res = await fetch('/history');
+        const data = await res.json();
+        if (data.length === 0) {
+            document.getElementById('history-list').innerHTML = '<p style="color:#64748b; font-size:14px;">No predictions yet.</p>';
+            return;
+        }
+        document.getElementById('history-list').innerHTML = [...data].reverse().map((item, i) => `
+            <div class="history-item">
+                <div class="history-num">${i + 1}</div>
+                <div style="flex:1;">
+                    <div style="font-weight:600; font-size:15px;">${item.disease}</div>
+                    <div style="color:#64748b; font-size:13px; margin-top:2px;">${item.symptoms.join(', ')}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="color:#6366f1; font-weight:600;">${item.confidence}%</div>
+                    <div style="color:#64748b; font-size:12px;">${item.doctor}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function savePrediction(result, symptoms) {
+        await fetch('/history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symptoms, disease: result.disease, confidence: result.confidence, doctor: result.doctor })
+        });
+        loadHistory();
+    }
+
+    loadStats();
+    loadHistory();
+
+    function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const date = new Date().toLocaleDateString('en-IN');
+    const disease = document.getElementById('disease-name').textContent;
+    const confidence = document.getElementById('confidence-val').textContent;
+    const doctor = document.getElementById('doctor-name').textContent;
+    const description = document.getElementById('description').textContent;
+
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(99, 102, 241);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('HealthVision', 14, 18);
+    doc.setTextColor(200, 200, 200);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('AI-Powered Disease Prediction Report', 14, 28);
+    doc.text('Date: ' + date, 150, 28);
+
+    doc.setDrawColor(239, 68, 68);
+    doc.roundedRect(14, 45, 182, 12, 2, 2, 'S');
+    doc.setTextColor(239, 68, 68);
+    doc.setFontSize(9);
+    doc.text('For Educational & Research Purposes Only - Not a substitute for medical advice', 16, 53);
+
+    doc.setDrawColor(79, 70, 229);
+    doc.roundedRect(14, 62, 182, 45, 3, 3, 'S');
+    doc.setTextColor(99, 102, 241);
+    doc.setFontSize(10);
+    doc.text('PRIMARY DIAGNOSIS', 20, 72);
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text(disease, 20, 85);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Confidence: ' + confidence, 20, 96);
+    doc.text('Specialist: ' + doctor, 20, 104);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(79, 70, 229);
+    doc.setFontSize(13);
+    doc.text('Selected Symptoms', 14, 120);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(11);
+    const symptomText = selected.map(s => s.replace(/_/g, ' ')).join(', ');
+    const splitSymptoms = doc.splitTextToSize(symptomText, 180);
+    doc.text(splitSymptoms, 14, 130);
+
+    let yPos = 130 + splitSymptoms.length * 7 + 10;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(79, 70, 229);
+    doc.setFontSize(13);
+    doc.text('Top Predictions', 14, yPos);
+    yPos += 10;
+    document.querySelectorAll('.top3-item').forEach((item, i) => {
+        const texts = item.querySelectorAll('.top3-row span');
+        if (texts.length >= 2) {
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(60, 60, 60);
+            doc.setFontSize(11);
+            doc.text((i+1) + '. ' + texts[0].textContent, 20, yPos);
+            doc.setTextColor(99, 102, 241);
+            doc.text(texts[1].textContent, 170, yPos);
+            yPos += 8;
+        }
+    });
+
+    yPos += 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(79, 70, 229);
+    doc.setFontSize(13);
+    doc.text('About This Condition', 14, yPos);
+    yPos += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(10);
+    const splitDesc = doc.splitTextToSize(description, 180);
+    doc.text(splitDesc, 14, yPos);
+    yPos += splitDesc.length * 6 + 10;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(79, 70, 229);
+    doc.setFontSize(13);
+    doc.text('Precautions', 14, yPos);
+    yPos += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(60, 60, 60);
+    document.querySelectorAll('.prec-item span:last-child').forEach(p => {
+        const lines = doc.splitTextToSize('- ' + p.textContent, 178);
+        doc.text(lines, 16, yPos);
+        yPos += lines.length * 6 + 3;
+    });
+
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 282, 210, 15, 'F');
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(9);
+    doc.text('© 2026 HealthVision | Generated: ' + date + ' | Educational Use Only', 14, 291);
+
+    doc.save('HealthVision_' + disease.replace(/\s+/g, '_') + '.pdf');
+}
+</script>
+</body>
+</html>
