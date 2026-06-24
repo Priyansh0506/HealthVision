@@ -1,10 +1,10 @@
-HealthVision
+# HealthVision
 
 HealthVision is a machine learning-based web application that predicts diseases from user symptoms and provides basic information like precautions, descriptions, and recommended specialists.
 
 I built this project to get hands-on experience with the complete ML workflow and to move beyond notebooks by creating a full-stack application with authentication, a database, and a user-friendly interface.
 
-Features
+# Features
 
 - Search and select from 132 symptoms.
 - Predict the most likely disease with a confidence score.
@@ -15,7 +15,7 @@ Features
 - Store prediction history for each user.
 - Compare Random Forest and Decision Tree performance.
 
-Tech Stack
+# Tech Stack
 
 - Backend: Flask, Python
 - Machine Learning: scikit-learn (Random Forest Classifier)
@@ -23,19 +23,19 @@ Tech Stack
 - Frontend: HTML, CSS, JavaScript
 - Authentication: Flask Sessions
 
-Dataset
+# Dataset
 
 The model was trained on a symptom-disease dataset containing 41+ diseases and 132 symptoms. Additional files provide disease descriptions, symptom severity weights, and precaution recommendations.
 
-Model Performance
+# Model Performance
 
 I experimented with multiple models and found that Random Forest achieved around 93% accuracy, outperforming a Decision Tree baseline. Therefore, Random Forest is used for the final predictions.
 
-Live Demo
+# Live Demo
 
 🌐 Try it here: https://healthvision-wbp2.onrender.com
 
-Running Locally
+# Running Locally
 
 git clone https://github.com/Priyansh0506/HealthVision.git
 cd HealthVision
@@ -46,7 +46,7 @@ Then open:
 
 http://127.0.0.1:5000
 
-Project Structure
+# Project Structure
 
 HealthVision/
 ├── app.py
@@ -63,11 +63,11 @@ HealthVision/
     ├── login.html
     └── register.html
 
-Disclaimer
+# Disclaimer
 
 This project is intended for educational purposes only. Predictions should not be considered medical advice. Always consult a qualified healthcare professional for diagnosis and treatment.
 
-Future Improvements
+# Future Improvements
 
 - Better model evaluation metrics and confusion matrix.
 - Improved mobile responsiveness.
