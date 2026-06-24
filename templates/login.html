@@ -8,35 +8,55 @@
 </head>
 <body>
 
-<div class="login-wrapper">
-    <div class="login-box">
+<div class="auth-shell">
 
-        <div class="logo">🩺</div>
-        <h2>HealthVision</h2>
-        <p class="tagline">AI Based Disease Prediction System</p>
-
-        <div class="features-box">
-            ✅ 41 Diseases Covered<br>
-            ✅ 132 Symptoms Available<br>
-            ✅ 93.2% Model Accuracy<br>
-            ✅ Doctor Recommendation
+    <div class="auth-panel">
+        <div class="panel-brand">
+            <span class="brand-dot"></span>
+            <span>HealthVision</span>
         </div>
+        <h1>Disease prediction,<br>backed by data.</h1>
+        <p class="panel-sub">A Random Forest model trained across hundreds of symptom combinations to point you toward the right diagnosis and specialist.</p>
 
-        {% if error %}
-        <div class="error-box">⚠️ {{ error }}</div>
-        {% endif %}
-
-        <form method="POST">
-            <input type="email" name="email" placeholder="Email address" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login →</button>
-        </form>
-
-        <div class="bottom-link">
-            New here? <a href="/register">Create Account</a>
+        <div class="panel-stats">
+            <div>
+                <div class="num">41+</div>
+                <div class="lbl">Diseases</div>
+            </div>
+            <div>
+                <div class="num">132</div>
+                <div class="lbl">Symptoms</div>
+            </div>
+            <div>
+                <div class="num">93.2%</div>
+                <div class="lbl">Accuracy</div>
+            </div>
         </div>
-
     </div>
+
+    <div class="auth-form-side">
+        <div class="login-box">
+            <h2>Welcome back</h2>
+            <p class="tagline">Log in to continue to your dashboard</p>
+
+            {% if error %}
+            <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+                <label>Email address</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required>
+                <button type="submit">Log in</button>
+            </form>
+
+            <div class="bottom-link">
+                New here? <a href="/register">Create an account</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 </body>

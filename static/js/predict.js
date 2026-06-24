@@ -1,47 +1,48 @@
-// predict.js - handles symptom selection and prediction
+// predict.js
+// handles symptom search, selection, and calling the prediction API
 
 let selectedSymptoms = [];
 
-// filter symptom list on search
+// filter the symptom list based on what user types in the search box
 function filterSymptoms(query) {
     const items = document.querySelectorAll('.symptom-item');
+    const q = query.toLowerCase();
     items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query.toLowerCase()) ? 'flex' : 'none';
+        const matches = item.textContent.toLowerCase().includes(q);
+        item.style.display = matches ? 'flex' : 'none';
     });
 }
 
-// add or remove symptom from selected list
+// called when a checkbox is checked/unchecked
 function toggleSymptom(checkbox) {
     const val = checkbox.value;
-    const label = checkbox.closest('.symptom-item');
 
     if (checkbox.checked) {
         if (!selectedSymptoms.includes(val)) {
             selectedSymptoms.push(val);
-            label.classList.add('selected');
+            checkbox.closest('.symptom-item').classList.add('selected');
         }
     } else {
         selectedSymptoms = selectedSymptoms.filter(s => s !== val);
-        label.classList.remove('selected');
+        checkbox.closest('.symptom-item').classList.remove('selected');
     }
 
-    refreshTagsArea();
+    updateTagsArea();
 }
 
-// update the tags display area
-function refreshTagsArea() {
-    const box = document.getElementById('tags-area');
+// re-render the tags area whenever selected symptoms change
+function updateTagsArea() {
+    const tagsBox = document.getElementById('tags-area');
     const countEl = document.getElementById('count-text');
 
     countEl.textContent = selectedSymptoms.length + ' symptoms selected';
 
     if (selectedSymptoms.length === 0) {
-        box.innerHTML = '<span class="empty-msg">No symptoms selected yet...</span>';
+        tagsBox.innerHTML = '<span class="empty-msg">No symptoms selected yet...</span>';
         return;
     }
 
-    box.innerHTML = '';
+    tagsBox.innerHTML = '';
     selectedSymptoms.forEach(sym => {
         const tag = document.createElement('div');
         tag.className = 'sym-tag';
@@ -49,15 +50,14 @@ function refreshTagsArea() {
             ${sym.replace(/_/g, ' ')}
             <span class="remove" onclick="removeSymptom('${sym}')">×</span>
         `;
-        box.appendChild(tag);
+        tagsBox.appendChild(tag);
     });
 }
 
-// remove a symptom from tags
+// remove a symptom from selection (also unchecks the checkbox)
 function removeSymptom(sym) {
     selectedSymptoms = selectedSymptoms.filter(s => s !== sym);
 
-    // uncheck the checkbox too
     document.querySelectorAll('.symptom-item input').forEach(cb => {
         if (cb.value === sym) {
             cb.checked = false;
@@ -65,38 +65,37 @@ function removeSymptom(sym) {
         }
     });
 
-    refreshTagsArea();
+    updateTagsArea();
 }
 
-// main predict function
+// main function - sends symptoms to backend and shows results
 async function runPrediction() {
     if (selectedSymptoms.length === 0) {
-        alert('Please select at least one symptom.');
+        alert('Please select at least one symptom first.');
         return;
     }
 
-    // show loading, hide results
     document.getElementById('loading-box').style.display = 'block';
     document.getElementById('results-section').style.display = 'none';
     document.getElementById('predict-btn').disabled = true;
 
     try {
-        const res = await fetch('/predict', {
+        const response = await fetch('/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ symptoms: selectedSymptoms })
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
         if (data.error) {
             alert(data.error);
             return;
         }
 
-        showResults(data);
+        displayResults(data);
 
-        // save to history
+        // save this prediction to history
         await fetch('/history', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -111,29 +110,29 @@ async function runPrediction() {
         loadHistory();
 
     } catch (err) {
+        console.log('prediction error:', err);
         alert('Something went wrong. Please try again.');
-        console.log('predict error:', err);
     } finally {
         document.getElementById('loading-box').style.display = 'none';
         document.getElementById('predict-btn').disabled = false;
     }
 }
 
-// fill in the results section
-function showResults(data) {
+// fill in all the result fields with the response data
+function displayResults(data) {
     document.getElementById('results-section').style.display = 'block';
 
-    // emergency alert
-    const emergBox = document.getElementById('emergency-alert');
-    emergBox.style.display = data.emergency ? 'block' : 'none';
+    // show emergency alert if needed
+    const emergAlert = document.getElementById('emergency-alert');
+    emergAlert.style.display = data.emergency ? 'block' : 'none';
 
-    // disease and confidence
+    // main prediction
     document.getElementById('disease-name').textContent = data.disease;
     document.getElementById('conf-text').textContent = data.confidence + '%';
     document.getElementById('conf-fill').style.width = data.confidence + '%';
     document.getElementById('doctor-name').textContent = data.doctor;
 
-    // top 3 predictions
+    // top 3 possible diseases
     const top3Div = document.getElementById('top3-list');
     top3Div.innerHTML = '';
     data.top3.forEach(([name, prob]) => {
@@ -150,10 +149,10 @@ function showResults(data) {
         `;
     });
 
-    // description
+    // disease description
     document.getElementById('desc-text').textContent = data.description;
 
-    // precautions
+    // precautions list
     const precDiv = document.getElementById('prec-list');
     precDiv.innerHTML = '';
     if (data.precautions && data.precautions.length > 0) {
@@ -166,9 +165,9 @@ function showResults(data) {
             `;
         });
     } else {
-        precDiv.innerHTML = '<p class="text-muted" style="font-size:13px;">No precautions found.</p>';
+        precDiv.innerHTML = '<p style="font-size:13px; color:#b2bec3;">No precautions available.</p>';
     }
 
-    // scroll to results
+    // scroll down to results
     document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
 }

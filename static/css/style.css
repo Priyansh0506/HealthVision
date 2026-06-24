@@ -1,98 +1,173 @@
-/* HealthVision - common styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #F7F9FC;
+    --surface: #FFFFFF;
+    --navy: #1A2E4A;
+    --navy-light: #243E61;
+    --teal: #00B4A6;
+    --teal-dim: #E6F7F6;
+    --border: #E2E8F0;
+    --text: #1E293B;
+    --muted: #64748B;
+    --red: #EF4444;
+    --green: #10B981;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+}
 
 body {
-    background-color: #f5f6fa;
-    color: #2d3436;
-    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 /* navbar */
 .navbar {
-    background-color: #1e3a5f;
-    border-bottom: 2px solid #2d5a8e;
+    background: var(--navy);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .navbar-brand {
-    font-size: 20px;
-    color: #ffffff !important;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    letter-spacing: -0.01em;
+}
+
+.brand-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 4px rgba(0,180,166,0.18);
+    display: inline-block;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .user-badge {
-    background-color: #2d5a8e;
+    background: rgba(255,255,255,0.1);
     color: #fff;
-    padding: 5px 12px;
+    padding: 5px 13px;
     border-radius: 20px;
     font-size: 13px;
+    font-weight: 500;
+}
+
+.btn-logout {
+    background: rgba(239,68,68,0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.3);
+    padding: 5px 13px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.btn-logout:hover {
+    background: rgba(239,68,68,0.3);
+    color: #fff;
 }
 
 /* footer */
 footer {
-    background-color: #1e3a5f;
-    color: #a0b4c8;
-    font-size: 13px;
+    background: var(--navy);
+    color: #64748B;
+    font-size: 12px;
+    text-align: center;
+    padding: 20px;
+    margin-top: 60px;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
+
+footer p { color: #94A3B8; margin-bottom: 2px; }
 
 /* card */
 .hv-card {
-    background: #ffffff;
-    border: 1px solid #dde3ea;
-    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     padding: 22px;
     margin-bottom: 20px;
+    box-shadow: var(--shadow);
 }
 
 .hv-card h6 {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    color: #636e72;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 15px;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
 }
 
-/* section heading */
-.section-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #2d3436;
-    margin-bottom: 4px;
-}
-
-/* simple progress bar */
+/* progress bar */
 .hv-bar {
-    height: 7px;
-    background: #dfe6e9;
-    border-radius: 4px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
     overflow: hidden;
     margin-top: 4px;
 }
 
 .hv-bar-fill {
     height: 100%;
-    background: #2d5a8e;
-    border-radius: 4px;
-    transition: width 0.6s ease;
+    background: linear-gradient(90deg, var(--teal), #0891b2);
+    border-radius: 99px;
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* buttons */
+/* predict button */
 .btn-predict {
-    background-color: #1e3a5f;
+    background: var(--navy);
     color: white;
     border: none;
     width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 15px;
+    padding: 13px;
+    border-radius: 9px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+    letter-spacing: 0.01em;
 }
 
 .btn-predict:hover {
-    background-color: #2d5a8e;
+    background: var(--navy-light);
+}
+
+.btn-predict:active {
+    transform: scale(0.99);
 }
 
 .btn-predict:disabled {
-    background-color: #b2bec3;
+    background: #CBD5E1;
     cursor: not-allowed;
+    transform: none;
 }

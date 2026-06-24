@@ -8,11 +8,10 @@
 
 {% block content %}
 
-<!-- page header -->
 <div class="page-header">
     <div class="container">
         <h1>Disease Prediction System</h1>
-        <p>Select your symptoms and get AI-based disease prediction with doctor recommendation</p>
+        <p>Select your symptoms and get an AI-based prediction with doctor recommendation</p>
         <div class="stats-row">
             <div class="stat-box">
                 <div class="num">41+</div>
@@ -36,13 +35,11 @@
 
 <div class="container">
 
-    <!-- symptom selection row -->
     <div class="row">
 
-        <!-- left: symptom list -->
         <div class="col-md-6">
             <div class="hv-card">
-                <h6>🔍 Select Symptoms</h6>
+                <h6>Select Symptoms</h6>
                 <input
                     type="text"
                     class="symptom-search"
@@ -60,11 +57,10 @@
             </div>
         </div>
 
-        <!-- right: selected symptoms + predict -->
         <div class="col-md-6">
             <div class="hv-card">
-                <h6>📋 Selected Symptoms</h6>
-                <div style="font-size:13px; color:#636e72; margin-bottom:10px;" id="count-text">
+                <h6>Selected Symptoms</h6>
+                <div id="count-text" style="font-size:13px; color:#94A3B8; margin-bottom:10px; font-weight:500;">
                     0 symptoms selected
                 </div>
                 <div class="tags-area" id="tags-area">
@@ -81,34 +77,33 @@
     <!-- loading -->
     <div class="loading-box" id="loading-box">
         <div class="spinner-border" role="status"></div>
-        <p class="mt-2 text-muted" style="font-size:14px;">Analyzing your symptoms...</p>
+        <p class="mt-2" style="font-size:13px; color:#94A3B8;">Analyzing your symptoms...</p>
     </div>
 
-    <!-- results section (hidden initially) -->
+    <!-- results -->
     <div id="results-section" style="display:none;">
 
         <div class="emergency-alert" id="emergency-alert">
-            🚨 Emergency: High-risk symptoms detected. Please visit a hospital immediately.
+            Emergency symptoms detected — please visit a hospital immediately.
         </div>
 
         <div class="row">
 
-            <!-- disease + doctor -->
             <div class="col-md-7">
                 <div class="hv-card">
-                    <h6>🩺 Prediction Result</h6>
+                    <h6>Prediction Result</h6>
                     <div class="disease-result-card">
                         <div class="disease-label">Predicted Disease</div>
                         <div class="disease-name" id="disease-name">—</div>
                         <div class="confidence-text">
                             <span>Confidence Score</span>
-                            <span id="conf-text" style="font-weight:600;">—</span>
+                            <span id="conf-text" style="font-weight:700; color:#1A2E4A;">—</span>
                         </div>
-                        <div class="hv-bar" style="margin-bottom:15px;">
+                        <div class="hv-bar" style="margin-bottom:16px;">
                             <div class="hv-bar-fill" id="conf-fill" style="width:0%"></div>
                         </div>
                         <div class="doctor-box">
-                            <div class="icon">👨‍⚕️</div>
+                            <div class="icon">Dr</div>
                             <div>
                                 <div class="label">Recommended Specialist</div>
                                 <div class="name" id="doctor-name">—</div>
@@ -118,26 +113,23 @@
                 </div>
             </div>
 
-            <!-- top 3 predictions -->
             <div class="col-md-5">
                 <div class="hv-card">
-                    <h6>📊 Top 3 Predictions</h6>
+                    <h6>Top 3 Predictions</h6>
                     <div id="top3-list"></div>
                 </div>
             </div>
 
-            <!-- description -->
             <div class="col-md-6">
                 <div class="hv-card">
-                    <h6>📖 About This Condition</h6>
-                    <p id="desc-text" style="font-size:14px; color:#636e72; line-height:1.8;"></p>
+                    <h6>About This Condition</h6>
+                    <p id="desc-text" style="font-size:13.5px; color:#64748B; line-height:1.8;"></p>
                 </div>
             </div>
 
-            <!-- precautions -->
             <div class="col-md-6">
                 <div class="hv-card">
-                    <h6>💊 Precautions</h6>
+                    <h6>Precautions</h6>
                     <div id="prec-list"></div>
                 </div>
             </div>
@@ -150,41 +142,41 @@
 
         <div class="col-md-6">
             <div class="hv-card">
-                <h6>🤖 Model Comparison</h6>
+                <h6>Model Comparison</h6>
 
-                <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; font-weight:500;">
                     <span>Random Forest</span>
-                    <span style="font-weight:600; color:#1e3a5f;" id="rf-acc">—</span>
+                    <span id="rf-acc" style="color:#1A2E4A; font-weight:700;">—</span>
                 </div>
-                <div class="hv-bar" style="margin-bottom:16px;">
+                <div class="hv-bar" style="margin-bottom:18px;">
                     <div class="hv-bar-fill" id="rf-bar" style="width:0%"></div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; font-weight:500;">
                     <span>Decision Tree</span>
-                    <span style="font-weight:600; color:#2d5a8e;" id="dt-acc">—</span>
+                    <span id="dt-acc" style="color:#64748B; font-weight:700;">—</span>
                 </div>
-                <div class="hv-bar" style="margin-bottom:18px;">
-                    <div class="hv-bar-fill" id="dt-bar" style="width:0%; background:#2d5a8e;"></div>
+                <div class="hv-bar" style="margin-bottom:22px;">
+                    <div class="hv-bar-fill" id="dt-bar" style="width:0%; background: linear-gradient(90deg, #64748B, #94A3B8);"></div>
                 </div>
 
                 <div class="row text-center g-2">
                     <div class="col-4">
-                        <div style="background:#f0f4f8; border-radius:8px; padding:12px;">
-                            <div style="font-size:20px; font-weight:700; color:#1e3a5f;" id="stat-diseases">—</div>
-                            <div style="font-size:11px; color:#636e72;">Diseases</div>
+                        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:9px; padding:13px;">
+                            <div id="stat-diseases" style="font-size:20px; font-weight:800; color:#1A2E4A;">—</div>
+                            <div style="font-size:11px; color:#94A3B8; font-weight:500;">Diseases</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div style="background:#f0f4f8; border-radius:8px; padding:12px;">
-                            <div style="font-size:20px; font-weight:700; color:#2d5a8e;" id="stat-symptoms">—</div>
-                            <div style="font-size:11px; color:#636e72;">Symptoms</div>
+                        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:9px; padding:13px;">
+                            <div id="stat-symptoms" style="font-size:20px; font-weight:800; color:#00B4A6;">—</div>
+                            <div style="font-size:11px; color:#94A3B8; font-weight:500;">Symptoms</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div style="background:#f0f4f8; border-radius:8px; padding:12px;">
-                            <div style="font-size:20px; font-weight:700; color:#27ae60;" id="stat-samples">—</div>
-                            <div style="font-size:11px; color:#636e72;">Samples</div>
+                        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:9px; padding:13px;">
+                            <div id="stat-samples" style="font-size:20px; font-weight:800; color:#10B981;">—</div>
+                            <div style="font-size:11px; color:#94A3B8; font-weight:500;">Samples</div>
                         </div>
                     </div>
                 </div>
@@ -194,7 +186,7 @@
 
         <div class="col-md-6">
             <div class="hv-card">
-                <h6>📊 Top Predictive Symptoms</h6>
+                <h6>Top Predictive Symptoms</h6>
                 <div id="top-symptoms"></div>
             </div>
         </div>
@@ -203,9 +195,9 @@
 
     <!-- history -->
     <div class="hv-card">
-        <h6>🕐 Recent Predictions</h6>
+        <h6>Recent Predictions</h6>
         <div id="history-list">
-            <p class="text-muted" style="font-size:14px;">No predictions made yet.</p>
+            <p style="font-size:13.5px; color:#94A3B8;">No predictions made yet.</p>
         </div>
     </div>
 
